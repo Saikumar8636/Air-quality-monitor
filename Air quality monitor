@@ -1,1 +1,49 @@
-
+1 # i n c l u d e <L i q u i d C r y s t a l . h> / / Header f i l e f o r LCD
+2 c o n s t i n t r s =12 , en =11 , d4 =5 , d5 =4 , d6 =3 , d7 =2; / / p i n s of LCD c o n n e c t e d t o Arduino
+3 L i q u i d C r y s t a l l c d ( rs , en , d4 , d5 , d6 , d7 ) ; / / l c d f u n c t i o n from L i q u i d C r y s t a l
+4
+5 i n t buz = 8 ; / / b u z z e r c o n n e c t e d t o p i n 8
+6 i n t l e d = 9 ; / / l e d c o n n e c t e d t o p i n 9
+7
+8 c o n s t i n t a q s e n s o r = A0 ; / / o u t p u t of mq135 c o n n e c t e d t o A0 p i n of Arduino
+9 i n t t h r e s h o l d = 250 ; / / T h r e s h o l d l e v e l f o r Air Q u a l i t y
+10
+11 vo id s e t u p ( ) {
+12
+13 pinMode ( buz , OUTPUT) ; / / b u z z e r i s c o n n e c t e d as Output from Arduino
+14 pinMode ( led , OUTPUT) ; / / l e d i s c o n n e c t e d as o u t p u t from Arduino
+15 pinMode ( a q s e n s o r , INPUT ) ; / / MQ135 i s c o n n e c t e d as INPUT t o a r d u i n o
+16
+17 S e r i a l . b e g i n ( 9 6 0 0 ) ; / / b e g i n s e r i a l communication wi th baud r a t e of 9600
+18
+19 l c d . c l e a r ( ) ; / / c l e a r l c d
+20 l c d . b e g i n ( 1 6 , 2 ) ; / / c o n s i d e r 16 ,2 l c d
+21 }
+22
+23 vo id lo op ( ) {
+24
+25 i n t ppm = analogRead ( a q s e n s o r ) ; / / r e a d MQ135 a n a l o g o u t p u t s a t A0 and s t o r e i t i n ppm
+26
+27 S e r i a l . p r i n t ( ” Air Q u a l i t y : ” ) ; / / p r i n t message i n s e r a i l m o n i t o r
+28 S e r i a l . p r i n t l n ( ppm ) ; / / p r i n t v a l u e of ppm i n s e r i a l m o n i t o r
+29
+30 l c d . s e t C u r s o r ( 0 , 0 ) ; / / s e t c u r s o r of l c d t o 1 s t row and 1 s t column
+31 l c d . p r i n t ( ” Air Q u a l i t : ” ) ; / / p r i n t message on l c d
+32 l c d . p r i n t ( ppm ) ; / / p r i n t v a l u e of MQ135
+33
+34 i f ( ppm > t h r e s h o l d ) / / check i s ppm i s g r e a t e r t h a n t h r e s h o l d or n o t3l c d . s e t C u r s o r ( 1 , 1 ) ; / / jump h e r e i f ppm i s g r e a t e r t h a n t h r e s h o l d
+37 l c d . p r i n t ( ”AQ Level HIGH” ) ;
+38 S e r i a l . p r i n t l n ( ”AQ Level HIGH” ) ;
+39 t o n e ( led , 1 0 0 0 , 2 0 0 ) ; / / b l i n k l e d w ith t u r n on t ime 1000mS, t u r n o f f t im e 200mS
+40 d i g i t a l W r i t e ( buz , HIGH) ; / / Turn ON Buzzer
+41 }
+42 e l s e
+43 {
+44 d i g i t a l W r i t e ( led ,LOW) ; / / jump h e r e i f ppm i s n o t g r e a t e r t h a n t h r e s h o l d and t u r n o f f LED
+45 d i g i t a l W r i t e ( buz ,LOW) ; / / Turn o f f Buzzer
+46 l c d . s e t C u r s o r ( 1 , 1 ) ;
+47 l c d . p r i n t ( ”AQ Level Good” ) ;
+48 S e r i a l . p r i n t l n ( ”AQ Level Good” ) ;
+49 }
+50 d e l a y ( 5 0 0 ) ;
+51 }
